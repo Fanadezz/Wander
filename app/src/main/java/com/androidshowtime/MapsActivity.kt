@@ -47,7 +47,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val zoomLevel = 17f
 
 
-
         //move camera with zoom
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
 
@@ -57,68 +56,85 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-    map.addMarker(MarkerOptions().position(homeLatLng))
+        map.addMarker(MarkerOptions().position(homeLatLng))
 
-    //add long press marker
-    addMarkerOnLongPress(map)
+        //add long press marker
+        addMarkerOnLongPress(map)
 
-}
+        //set point of InstrumentationRegistry
+        setPOIClick(map)
 
-override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-    menuInflater.inflate(R.menu.menu, menu)
-
-    return super.onCreateOptionsMenu(menu)
-}
-
-override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-    //super.onOptionsItemSelected(item)
-    return when (item.itemId) {
-
-        R.id.normal_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-            true
-        }
-        R.id.hybrid -> {
-
-            map.mapType = GoogleMap.MAP_TYPE_HYBRID
-            true
-        }
-
-        R.id.satellite_map -> {
-
-            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            true
-        }
-
-
-        R.id.terrain_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            true
-        }
-
-        else               -> super.onOptionsItemSelected(item)
     }
-}
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-private fun addMarkerOnLongPress(map: GoogleMap) {
+        menuInflater.inflate(R.menu.menu, menu)
 
-    map.setOnMapLongClickListener {
-
-        val snippet =
-                String.format(Locale.getDefault(),
-                        "Lat: %1$.5f, Long: %2$.5f",
-                        it.latitude, it.longitude)
-
-        //use snippet() call on the
-        map.addMarker(MarkerOptions().position(it)
-                .title(getString(R.string.dropped_pin))// set the title
-                .snippet(snippet)) //set info
+        return super.onCreateOptionsMenu(menu)
     }
-}
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        //super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+
+            R.id.normal_map -> {
+                map.mapType = GoogleMap.MAP_TYPE_NORMAL
+
+                true
+            }
+            R.id.hybrid -> {
+
+                map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                true
+            }
+
+            R.id.satellite_map -> {
+
+                map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                true
+            }
+
+
+            R.id.terrain_map -> {
+                map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                true
+            }
+
+            else               -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    private fun addMarkerOnLongPress(map: GoogleMap) {
+
+        map.setOnMapLongClickListener {
+
+            val snippet =
+                    String.format(Locale.getDefault(), "Lat: %1$.5f, Long: %2$.5f", it.latitude, it.longitude)
+
+            //use snippet() call on the
+            map.addMarker(MarkerOptions().position(it)
+                    .title(getString(R.string.dropped_pin)) // set the title
+                    .snippet(snippet)) //set info
+        }
+
+
+    }
+
+    private fun setPOIClick(map: GoogleMap) {
+
+
+        map.setOnPoiClickListener {
+
+            val poiMarker =
+                    map.addMarker(MarkerOptions().position(it.latLng)
+                            .title(it.name))
+
+            //call show info
+            poiMarker.showInfoWindow()
+        }
+
+    }
 
 }
