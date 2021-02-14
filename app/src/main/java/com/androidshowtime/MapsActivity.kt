@@ -1,8 +1,9 @@
 package com.androidshowtime
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -34,9 +35,58 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+
+        val lat = -1.298311703512306
+        val lng = 36.76229638360123
+        val homeLatLng = LatLng(lat, lng)
+
+        val zoomLevel = 17f
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng,zoomLevel) )
+
+        map.addMarker(MarkerOptions().position(homeLatLng))
+
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.menu, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        //super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+
+            R.id.normal_map -> {
+                map.mapType = GoogleMap.MAP_TYPE_NORMAL
+
+                true
+            }
+            R.id.hybrid -> {
+
+                map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                true
+            }
+
+            R.id.satellite_map -> {
+
+                map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                true
+            }
+
+
+            R.id.terrain_map -> {
+                map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                true
+            }
+
+            else               -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    
 }
