@@ -1,5 +1,6 @@
 package com.androidshowtime
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,8 +9,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import timber.log.Timber
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -19,6 +23,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        Timber.plant(Timber.DebugTree())
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -64,6 +70,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //set point of InstrumentationRegistry
         setPOIClick(map)
 
+
+        //set styele
+        setMapStyle(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -116,7 +125,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //use snippet() call on the
             map.addMarker(MarkerOptions().position(it)
                     .title(getString(R.string.dropped_pin)) // set the title
-                    .snippet(snippet)) //set info
+                    .snippet(snippet) //set info
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
         }
 
 
@@ -136,5 +146,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
     }
+
+
+    private fun setMapStyle(map: GoogleMap) {
+
+        try {
+
+            //customize map which returns a boolean value
+            val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle
+            (this, R.raw.map_style))
+
+            if (!success){
+
+                Timber.i("File Parsing Failed")
+            }
+
+        }catch (e: Resources.NotFoundException){
+
+            Timber.i("File Parsing error $e")
+        }
+
+    }
+
+
 
 }
